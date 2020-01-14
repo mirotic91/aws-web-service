@@ -1,12 +1,16 @@
 package me.mirotic.awswebservice.web;
 
 import lombok.RequiredArgsConstructor;
+import me.mirotic.awswebservice.config.auth.dto.SessionUser;
 import me.mirotic.awswebservice.service.PostsService;
 import me.mirotic.awswebservice.web.dto.PostsResponseDto;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import javax.servlet.http.HttpSession;
+import java.util.Objects;
 
 
 @RequiredArgsConstructor
@@ -15,9 +19,17 @@ public class IndexController {
 
     private final PostsService postsService;
 
+    private final HttpSession httpSession;
+
     @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("posts", postsService.findAllDesc());
+
+        SessionUser user = (SessionUser) httpSession.getAttribute("user");
+        if (Objects.nonNull(user)) {
+            model.addAttribute("userName", user.getName());
+        }
+
         return "index";
     }
 
