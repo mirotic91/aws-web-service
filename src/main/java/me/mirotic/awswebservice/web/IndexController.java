@@ -1,6 +1,7 @@
 package me.mirotic.awswebservice.web;
 
 import lombok.RequiredArgsConstructor;
+import me.mirotic.awswebservice.config.auth.LoginUser;
 import me.mirotic.awswebservice.config.auth.dto.SessionUser;
 import me.mirotic.awswebservice.service.PostsService;
 import me.mirotic.awswebservice.web.dto.PostsResponseDto;
@@ -22,10 +23,9 @@ public class IndexController {
     private final HttpSession httpSession;
 
     @GetMapping("/")
-    public String index(Model model) {
+    public String index(Model model, @LoginUser SessionUser user) {
         model.addAttribute("posts", postsService.findAllDesc());
 
-        SessionUser user = (SessionUser) httpSession.getAttribute("user");
         if (Objects.nonNull(user)) {
             model.addAttribute("userName", user.getName());
         }
